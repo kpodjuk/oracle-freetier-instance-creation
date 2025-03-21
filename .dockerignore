@@ -1,0 +1,34 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Environment files
+.env
+.env.example
+oci.env
+
+# Logs and temporary files
+*.log
+INSTANCE_CREATED
+ERROR_IN_CONFIG.log
+UNHANDLED_ERROR.log
+
+# Documentation
+README.md
+README.docker.md
+LICENSE
+
+# SSH keys
+*.pub
+id_rsa*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/

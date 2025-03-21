@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  oci-instance-creator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: oci-instance-creator:latest
+    container_name: oci-instance-creator
+    restart: always
+    volumes:
+      - oci-config:/app/config
+      - oci-ssh:/app/ssh
+      - oci-logs:/app/logs
+    environment:
+      # Required variables
+      - OCI_CONFIG_CONTENT=${OCI_CONFIG_CONTENT}
+      - OCT_FREE_AD=${OCT_FREE_AD:-AD-1}
+      - DISPLAY_NAME=${DISPLAY_NAME:-OCI-Free-Instance}
+      - OCI_COMPUTE_SHAPE=${OCI_COMPUTE_SHAPE:-VM.Standard.A1.Flex}
+
+      # Optional variables with defaults
+      - SECOND_MICRO_INSTANCE=${SECOND_MICRO_INSTANCE:-False}
+      - REQUEST_WAIT_TIME_SECS=${REQUEST_WAIT_TIME_SECS:-60}
+      - OCI_SUBNET_ID=${OCI_SUBNET_ID:-}
+      - OCI_IMAGE_ID=${OCI_IMAGE_ID:-}
+      - OPERATING_SYSTEM=${OPERATING_SYSTEM:-Canonical Ubuntu}
+      - OS_VERSION=${OS_VERSION:-22.04}
+      - ASSIGN_PUBLIC_IP=${ASSIGN_PUBLIC_IP:-false}
+      - BOOT_VOLUME_SIZE=${BOOT_VOLUME_SIZE:-50}
+
+      # Notification settings
+      - NOTIFY_EMAIL=${NOTIFY_EMAIL:-False}
+      - EMAIL=${EMAIL:-}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "ps",
+          "aux",
+          "|",
+          "grep",
+          "main.py",
+          "|",
+          "grep",
+          "-v",
+          "grep",
+          "||",
+          "exit",
+          "1",
+        ]
+      interval: 5m
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  oci-config:
+    driver: local
+  oci-ssh:
+    driver: local
+  oci-logs:
+    driver: local
