@@ -12,6 +12,7 @@ services:
       - oci-config:/app/config
       - oci-ssh:/app/ssh
       - oci-logs:/app/logs
+      - ./oci_api_private_key.pem:/app/config/oci_api_private_key.pem
     environment:
       # Required variables
       - OCI_CONFIG_CONTENT=${OCI_CONFIG_CONTENT}
@@ -35,22 +36,7 @@ services:
       - EMAIL_PASSWORD=${EMAIL_PASSWORD:-}
       - DISCORD_WEBHOOK=${DISCORD_WEBHOOK:-}
     healthcheck:
-      test:
-        [
-          "CMD",
-          "ps",
-          "aux",
-          "|",
-          "grep",
-          "main.py",
-          "|",
-          "grep",
-          "-v",
-          "grep",
-          "||",
-          "exit",
-          "1",
-        ]
+      test: [ "CMD", "ps", "aux", "|", "grep", "main.py", "|", "grep", "-v", "grep", "||", "exit", "1" ]
       interval: 5m
       timeout: 30s
       retries: 3
